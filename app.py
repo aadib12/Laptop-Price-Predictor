@@ -94,4 +94,3 @@ if st.button('Predict Price'):
 
     pred = pipe.predict(query_df)[0]
     st.title("The predicted price of this configuration is " + str(int(np.exp(pred))))
-
