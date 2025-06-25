@@ -3,6 +3,7 @@ import pickle
 import numpy as np
 import pandas as pd
 
+
 # import the model
 pipe = pickle.load(open('pipe.pkl','rb'))
 df = pickle.load(open('df.pkl','rb'))
@@ -44,27 +45,6 @@ gpu = st.selectbox('GPU',df['Gpu Brand'].unique())
 
 os = st.selectbox('OS',df['os'].unique())
 
-# if st.button('Predict Price'):
-#     # query
-#     ppi = None
-#     if touchscreen == 'Yes':
-#         touchscreen = 1
-#     else:
-#         touchscreen = 0
-#
-#     if ips == 'Yes':
-#         ips = 1
-#     else:
-#         ips = 0
-#
-#     X_res = int(resolution.split('x')[0])
-#     Y_res = int(resolution.split('x')[1])
-#     ppi = ((X_res**2) + (Y_res**2))**0.5/screen_size
-#     query = np.array([company,type,ram,weight,touchscreen,ips,ppi,cpu,hdd,ssd,gpu,os])
-#
-#     query = query.reshape(1,12)
-#     st.title("The predicted price of this configuration is " + str(int(np.exp(pipe.predict(query)[0]))))
-
 if st.button('Predict Price'):
     touchscreen_val = 1 if touchscreen == 'Yes' else 0
     ips_val = 1 if ips == 'Yes' else 0
@@ -73,23 +53,24 @@ if st.button('Predict Price'):
     Y_res = int(resolution.split('x')[1])
     ppi_val = ((X_res**2) + (Y_res**2))**0.5 / screen_size
 
+    # Create a DataFrame with ONE row
     query_df = pd.DataFrame([[
         company,
         type,
         resolution,
-        cpu,
-        gpu,
-        os,
         ram,
         weight,
         touchscreen_val,
         ips_val,
         ppi_val,
+        cpu,
         hdd,
-        ssd
+        ssd,
+        gpu,
+        os
     ]], columns=[
-        'Company', 'TypeName', 'ScreenResolution', 'Cpu Brand', 'Gpu Brand', 'os',
-        'Ram', 'Weight', 'Touchscreen', 'IPS', 'ppi', 'HDD', 'SSD'
+        'Company', 'TypeName', 'ScreenResolution', 'Ram', 'Weight',
+        'Touchscreen', 'IPS', 'ppi', 'Cpu Brand', 'HDD', 'SSD', 'Gpu Brand', 'os'
     ])
 
     pred = pipe.predict(query_df)[0]
